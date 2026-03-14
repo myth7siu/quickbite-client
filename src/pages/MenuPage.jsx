@@ -3,6 +3,8 @@ import { useSearchParams } from 'react-router-dom';
 import MenuCard from '../components/MenuCard.jsx';
 import CartDrawer from '../components/CartDrawer.jsx';
 
+const API_BASE = import.meta.env.VITE_API_BASE;
+
 export default function MenuPage() {
   const [searchParams] = useSearchParams();
   const tableNumber = searchParams.get('table') || '1';
@@ -19,7 +21,7 @@ export default function MenuPage() {
   useEffect(() => {
     const fetchMenu = async () => {
       try {
-        const res = await fetch('/api/menu');
+        const res = await fetch(`${API_BASE}/menu`);
         const data = await res.json();
         setMenuItems(data);
       } catch (err) {
@@ -79,7 +81,7 @@ export default function MenuPage() {
           quantity: c.quantity,
         })),
       };
-      const res = await fetch('/api/orders', {
+      const res = await fetch(`${API_BASE}/orders`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

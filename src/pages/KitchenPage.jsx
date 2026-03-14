@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import socket from '../socket.js';
 import OrderCard from '../components/OrderCard.jsx';
 
+const API_BASE = import.meta.env.VITE_API_BASE;
+
 export default function KitchenPage() {
   const [activeOrders, setActiveOrders] = useState([]);
   const [completedOrders, setCompletedOrders] = useState([]);
@@ -11,7 +13,7 @@ export default function KitchenPage() {
   // Fetch active orders (for initial load + reconnection resilience)
   const fetchActiveOrders = useCallback(async () => {
     try {
-      const res = await fetch('/api/orders');
+      const res = await fetch(`${API_BASE}/orders`);
       const data = await res.json();
       setActiveOrders(data.filter((o) => o.status !== 'Completed'));
     } catch (err) {
@@ -22,7 +24,7 @@ export default function KitchenPage() {
   // Fetch completed orders history
   const fetchHistory = useCallback(async () => {
     try {
-      const res = await fetch('/api/orders/history');
+      const res = await fetch(`${API_BASE}/orders/history`);
       const data = await res.json();
       setCompletedOrders(data);
     } catch (err) {
@@ -85,7 +87,7 @@ export default function KitchenPage() {
   // Update order status
   const handleStatusUpdate = async (orderId, newStatus) => {
     try {
-      const res = await fetch(`/api/orders/${orderId}/status`, {
+      const res = await fetch(`${API_BASE}/orders/${orderId}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),
